@@ -247,8 +247,13 @@ public class RestApiServiceImpl implements RestApiService {
 					if (field.isAnnotationPresent(Properties.class)) {
 						Properties properties = field.getAnnotation(Properties.class);
 						String value = properties.value();
+						String defaultValue = properties.defaultValue();
 						try {
-							ReflectionUtils.setField(obj, field, System.getProperty(value));
+							if(!Strings.isNullOrEmpty(System.getProperty(value))) {
+								ReflectionUtils.setField(obj, field, System.getProperty(value));
+							}else{
+								ReflectionUtils.setField(obj, field, defaultValue);
+							}
 						} catch (Exception e) {
 							throw new RuntimeException(e);
 						}
