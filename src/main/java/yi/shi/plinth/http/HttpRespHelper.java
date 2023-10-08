@@ -56,8 +56,6 @@ public final class HttpRespHelper {
         HttpServletResponse resp = ServletHelper.getResponse();
         String data = "";
 
-        //TODO
-        // 增加 对 String 以外的 数据流类型支持，用于传输 图片或者流媒体
         if (responseData.getData() instanceof String) {
             data = (String) responseData.getData();
         } else if(responseData.getData() instanceof InputStream){
@@ -91,7 +89,5 @@ public final class HttpRespHelper {
         writer.flush();
         writer.close();
     }
-
-
 
 }
