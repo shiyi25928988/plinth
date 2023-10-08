@@ -76,7 +76,7 @@ public class JettyModule extends AbstractModule {
 			}
 			{
 				ServletContextHandler resourceHandler = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
-				resourceHandler.setContextPath(System.getProperty("server.resources", ("/static/*")));
+				resourceHandler.setContextPath(System.getProperty("server.resources.context", ("/static/*")));
 				resourceHandler.insertHandler(getResourceHandler());
 				handlerList.prependHandler(resourceHandler);
 			}
@@ -92,7 +92,7 @@ public class JettyModule extends AbstractModule {
 		private ResourceHandler getResourceHandler() {
 			try {
 				//Resource res = Resource.newResource("C:\\Users\\86135\\Videos", false);
-				String fileStoragePath = System.getProperty("application.localStorageFolder", System.getProperty("user.dir")+ File.separator+"src"+File.separator+"main"+File.separator+"resources"+File.separator+"static");
+				String fileStoragePath = System.getProperty("server.resources.folder", System.getProperty("user.dir")+ File.separator+"src"+File.separator+"main"+File.separator+"resources"+File.separator+"static");
 				Resource res = Resource.newResource(fileStoragePath, false);
 				ResourceHandler resourceHandler = new ResourceHandler();
 				resourceHandler.setDirectoriesListed(true);
