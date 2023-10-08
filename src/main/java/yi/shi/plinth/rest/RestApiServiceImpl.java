@@ -30,7 +30,10 @@ import yi.shi.plinth.exception.SingleRequestBodyRequiredException;
 
 import com.google.common.base.Strings;
 import com.google.inject.Injector;
+import yi.shi.plinth.http.HttpErrorRespHelper;
+import yi.shi.plinth.http.HttpReqHelper;
 import yi.shi.plinth.http.HttpRespHelper;
+import yi.shi.plinth.http.HttpStatusCode;
 import yi.shi.plinth.reflection.ReflectionUtils;
 import yi.shi.plinth.modules.IocModule;
 import yi.shi.plinth.modules.ModuleRegister;
@@ -197,15 +200,11 @@ public class RestApiServiceImpl implements RestApiService {
 		HttpServletRequest req = ServletHelper.getRequest();
 		String path = StringUtils.remove(req.getRequestURI(), req.getContextPath());
 		Method method = methodMap.get(path);
-
 		if (Objects.nonNull(method)) {
 			Class clazz = classMap.get(path);
 			List<String> parameters = parameterMap.get(method);
-
 			Class<?> requestBodyClass = requestBodyMap.get(method);
-
 			if (Objects.nonNull(parameters) && !parameters.isEmpty()) {
-
 				parameters.forEach(p -> {
 					args.add(ServletHelper.getRequest().getParameter(p));
 				});
@@ -213,13 +212,12 @@ public class RestApiServiceImpl implements RestApiService {
 				return;
 			}
 			if (Objects.nonNull(requestBodyClass)) {
-				invoke(clazz, method, HttpRespHelper.getRequestPostBody(requestBodyClass));
+				invoke(clazz, method, HttpReqHelper.getRequestPostBody(requestBodyClass));
 				return;
-
 			}
 			invoke(clazz, method);
 		} else {
-			HttpRespHelper.send404Status();
+			HttpErrorRespHelper.send404();
 		}
 	}
 
@@ -259,7 +257,7 @@ public class RestApiServiceImpl implements RestApiService {
 						}
 					}
 				});
-				HttpRespHelper.sendResponseData(ReflectionUtils.invokeMethod(obj, method, args));
+				HttpRespHelper.sendResponseData(ReflectionUtils.invokeMethod(obj, method, args), HttpStatusCode.SC_OK);
 			}
 		}
 	}

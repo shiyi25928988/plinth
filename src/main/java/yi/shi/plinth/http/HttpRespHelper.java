@@ -35,12 +35,12 @@ public final class HttpRespHelper {
      * @throws UnsupportMIMETypeException
      * @throws IOException
      */
-    public static void sendResponseData(final Object data) throws UnsupportMIMETypeException, IOException {
+    public static void sendResponseData(Object data, int httpStatusCode) throws IOException {
         if (Objects.nonNull(data)) {
             if (data instanceof ReturnType) {
-                sendResponseData((ReturnType<?>) data);
+                sendResponseData((ReturnType<?>) data, httpStatusCode);
             } else {
-                sendResponseData(new JSON(data));
+                sendResponseData(new JSON(data), httpStatusCode);
             }
         } else {
             log.error("RestHelper#sendResponseData send a null object, cause of a void return type method");
@@ -49,32 +49,10 @@ public final class HttpRespHelper {
     }
 
     /**
-     *
-     */
-    public static void send404Status() {
-        HttpServletResponse resp = ServletHelper.getResponse();
-        resp.setStatus(HttpStatusCode.SC_NOT_FOUND);
-        resp.setCharacterEncoding("UTF-8");
-        try {
-            resp.sendRedirect("/404");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-//        PrintWriter writer;
-//        try {
-//            writer = resp.getWriter();
-//            writer.flush();
-//            writer.close();
-//        } catch (IOException e) {
-//            log.error(e.getLocalizedMessage());
-//        }
-    }
-
-    /**
      * @param responseData
      * @throws IOException
      */
-    private static void sendResponseData(final ReturnType<?> responseData) throws IOException {
+    private static void sendResponseData(final ReturnType<?> responseData, final int httpStatusCode) throws IOException {
         HttpServletResponse resp = ServletHelper.getResponse();
         String data = "";
 
@@ -84,7 +62,7 @@ public final class HttpRespHelper {
             data = (String) responseData.getData();
         } else if(responseData.getData() instanceof InputStream){
             IOUtils.copy((InputStream) responseData.getData(), resp.getOutputStream());
-            resp.setStatus(HttpStatusCode.SC_OK);
+            resp.setStatus(httpStatusCode);
             resp.setCharacterEncoding("UTF-8");
             resp.setContentType(responseData.getMimeType().getType());
             resp.getOutputStream().flush();
@@ -105,7 +83,7 @@ public final class HttpRespHelper {
                 return;
             }
         }
-        resp.setStatus(HttpStatusCode.SC_OK);
+        resp.setStatus(httpStatusCode);
         resp.setContentType(responseData.getMimeType().getType());
         resp.setCharacterEncoding("UTF-8");
         PrintWriter writer = resp.getWriter();
@@ -114,117 +92,6 @@ public final class HttpRespHelper {
         writer.close();
     }
 
-    public static void sendHtml(String html) {
-        try {
-            HttpServletResponse resp = ServletHelper.getResponse();
-            resp.setContentType(MimeType.TEXT_HTML.getType());
-            resp.setCharacterEncoding("UTF-8");
-            resp.setStatus(HttpStatusCode.SC_OK);
-            PrintWriter writer;
-            writer = resp.getWriter();
-            writer.write(html);
-            writer.flush();
-            writer.close();
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
-    }
 
-    /**
-     * @param cssFileName
-     */
-    public static void sendCss(String cssFileName) {
-        log.info("requesting css file : " + cssFileName);
-        String filePath = ServletHelper.getRealPath() + "WEB-INF" + File.separator + "css" + File.separator
-                + cssFileName;
-        File file = new File(filePath);
-        if (file.exists()) {
-            try {
-                FileReader fis = new FileReader(file);
-                long size = file.length();
-                char[] temp = new char[(int) size];
-                fis.read(temp, 0, (int) size);
-                fis.close();
-
-                HttpServletResponse resp = ServletHelper.getResponse();
-                resp.setContentType(MimeType.TEXT_CSS.getType());
-                resp.setCharacterEncoding("UTF-8");
-                PrintWriter writer;
-                writer = resp.getWriter();
-                writer.write(temp);
-                writer.flush();
-                writer.close();
-            } catch (IOException e) {
-                log.error(e.getMessage());
-            }
-        }
-    }
-
-    /**
-     * @param filePath
-     * @param imageType
-     * @throws IOException
-     */
-    public static void sendImage(String filePath, MimeType imageType) throws IOException {
-        HttpServletResponse response = ServletHelper.getResponse();
-        File file = new File(filePath);
-
-        if (file.exists()) {
-            FileInputStream fis = new FileInputStream(file);
-            long size = file.length();
-            byte[] temp = new byte[(int) size];
-            fis.read(temp, 0, (int) size);
-            fis.close();
-            byte[] data = temp;
-            ServletOutputStream out = response.getOutputStream();
-            response.setContentType(imageType.getType());
-            out.write(data);
-            out.flush();
-            out.close();
-        } else {
-            throw new IOException(filePath + " doesn't exist!!");
-        }
-    }
-
-    public static void sendBase64Icon(String icon) {
-        try {
-            HttpServletResponse resp = ServletHelper.getResponse();
-            resp.setContentType(MimeType.IMAGE_PNG.getType());
-            resp.setCharacterEncoding("UTF-8");
-            PrintWriter writer;
-
-            writer = resp.getWriter();
-
-            writer.write(icon);
-            writer.flush();
-            writer.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * @param clazz
-     * @return
-     * @throws IOException
-     */
-    public static Object getRequestPostBody(Class<?> clazz) throws IOException {
-        HttpServletRequest request = ServletHelper.getRequest();
-        int contentLength = request.getContentLength();
-        if (contentLength < 0) {
-            return null;
-        }
-        byte buffer[] = new byte[contentLength];
-        for (int i = 0; i < contentLength; ) {
-
-            int readlen = request.getInputStream().read(buffer, i, contentLength - i);
-            if (readlen == -1) {
-                break;
-            }
-            i += readlen;
-        }
-        return JsonUtils.fromJson(buffer, clazz);
-    }
 
 }

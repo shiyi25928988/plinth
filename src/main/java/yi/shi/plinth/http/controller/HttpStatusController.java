@@ -17,4 +17,5 @@ public class HttpStatusController {
     public HTML notFound() throws IOException {
         return new HTML().setUrl("/static/http/404.html");
     }
+
 }
