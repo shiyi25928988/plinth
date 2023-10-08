@@ -34,6 +34,7 @@ import yi.shi.plinth.http.HttpErrorRespHelper;
 import yi.shi.plinth.http.HttpReqHelper;
 import yi.shi.plinth.http.HttpRespHelper;
 import yi.shi.plinth.http.HttpStatusCode;
+import yi.shi.plinth.properties.CoreProperties;
 import yi.shi.plinth.reflection.ReflectionUtils;
 import yi.shi.plinth.modules.IocModule;
 import yi.shi.plinth.modules.ModuleRegister;
@@ -247,11 +248,7 @@ public class RestApiServiceImpl implements RestApiService {
 						String value = properties.value();
 						String defaultValue = properties.defaultValue();
 						try {
-							if(!Strings.isNullOrEmpty(System.getProperty(value))) {
-								ReflectionUtils.setField(obj, field, System.getProperty(value));
-							}else{
-								ReflectionUtils.setField(obj, field, defaultValue);
-							}
+							ReflectionUtils.setField(obj, field, CoreProperties.getProperties(value, defaultValue));
 						} catch (Exception e) {
 							throw new RuntimeException(e);
 						}
