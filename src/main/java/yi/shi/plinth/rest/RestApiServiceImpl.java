@@ -13,12 +13,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.HEAD;
-import javax.ws.rs.OPTIONS;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
+
+import yi.shi.plinth.annotation.http.Method.DELETE;
+import yi.shi.plinth.annotation.http.Method.GET;
+import yi.shi.plinth.annotation.http.Method.HEAD;
+import yi.shi.plinth.annotation.http.Method.OPTIONS;
+import yi.shi.plinth.annotation.http.Method.POST;
+import yi.shi.plinth.annotation.http.Method.PUT;
 
 import yi.shi.plinth.annotation.Properties;
 import yi.shi.plinth.annotation.http.HttpBody;

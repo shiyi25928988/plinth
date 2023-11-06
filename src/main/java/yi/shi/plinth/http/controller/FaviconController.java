@@ -5,7 +5,7 @@ import yi.shi.plinth.annotation.http.HttpPath;
 import yi.shi.plinth.http.MimeType;
 import yi.shi.plinth.http.result.BINARY;
 
-import javax.ws.rs.GET;
+import yi.shi.plinth.annotation.http.Method.GET;
 
 @Restful
 public class FaviconController {

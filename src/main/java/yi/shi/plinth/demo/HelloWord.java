@@ -1,7 +1,7 @@
 package yi.shi.plinth.demo;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
+import yi.shi.plinth.annotation.http.Method.GET;
+import yi.shi.plinth.annotation.http.Method.POST;
 
 import com.google.inject.Inject;
 import yi.shi.plinth.annotation.Restful;

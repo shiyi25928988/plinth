@@ -4,7 +4,7 @@ import yi.shi.plinth.annotation.Restful;
 import yi.shi.plinth.annotation.http.HttpPath;
 import yi.shi.plinth.http.result.HTML;
 
-import javax.ws.rs.GET;
+import yi.shi.plinth.annotation.http.Method.GET;
 import java.io.IOException;
 
 @Restful
