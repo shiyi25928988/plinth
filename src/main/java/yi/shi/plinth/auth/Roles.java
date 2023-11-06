@@ -26,4 +26,8 @@ public final class Roles {
         }
     }
 
+    public static List<String> getRoles(Object id){
+        return map.get(id);
+    }
+
 }

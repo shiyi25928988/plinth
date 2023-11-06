@@ -15,8 +15,6 @@ public class RoleStpInterface implements StpInterface {
 
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
-        List<String> list = new ArrayList<>();
-        list.add("admin");
-        return list;
+        return Roles.getRoles(loginId);
     }
 }
