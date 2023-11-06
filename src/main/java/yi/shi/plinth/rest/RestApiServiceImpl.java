@@ -1,5 +1,6 @@
 package yi.shi.plinth.rest;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -14,6 +15,8 @@ import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cn.dev33.satoken.stp.StpUtil;
+import yi.shi.plinth.annotation.auth.AUTH;
 import yi.shi.plinth.annotation.http.Method.DELETE;
 import yi.shi.plinth.annotation.http.Method.GET;
 import yi.shi.plinth.annotation.http.Method.HEAD;
@@ -203,6 +206,7 @@ public class RestApiServiceImpl implements RestApiService {
 		String path = StringUtils.remove(req.getRequestURI(), req.getContextPath());
 		Method method = methodMap.get(path);
 		if (Objects.nonNull(method)) {
+			checkAuthAndRole(method);
 			Class clazz = classMap.get(path);
 			List<String> parameters = parameterMap.get(method);
 			Class<?> requestBodyClass = requestBodyMap.get(method);
@@ -223,6 +227,24 @@ public class RestApiServiceImpl implements RestApiService {
 		}
 	}
 
+	private void checkAuthAndRole(Method method) throws IOException {
+
+		AUTH auth = method.getAnnotation(AUTH.class);
+		if (Objects.nonNull(auth)) {
+			try {
+				StpUtil.checkLogin();
+			}catch (Exception e){
+				HttpErrorRespHelper.send401();
+			}
+			if (auth.roles().length > 0) {
+				try {
+					StpUtil.checkRoleAnd(auth.roles());
+				}catch (Exception e){
+					HttpErrorRespHelper.send403();
+				}
+			}
+		}
+	}
 	/**
 	 * @param clazz
 	 * @param method

@@ -19,6 +19,7 @@ import cn.dev33.satoken.servlet.model.SaRequestForServlet;
 import cn.dev33.satoken.servlet.model.SaResponseForServlet;
 import cn.dev33.satoken.servlet.model.SaStorageForServlet;
 
+import yi.shi.plinth.auth.RoleStpInterface;
 import yi.shi.plinth.rest.RestApiService;
 import yi.shi.plinth.rest.RestApiServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -118,6 +119,7 @@ public class DispatcherServlet extends HttpServlet {
 		SaStorage storage = new SaStorageForServlet(ServletHelper.getRequest());
 		SaTokenContextForThreadLocalStorage.setBox(saRequest, saResponse, storage);
 		SaManager.setSaTokenContext(new SaTokenContextForThreadLocal());
+		SaManager.setStpInterface(new RoleStpInterface());
 	}
 
 }
