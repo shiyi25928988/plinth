@@ -31,8 +31,8 @@ public class JettyModule extends AbstractModule {
 	@Override
 	protected void configure() {
 		
-		bind(ServletContextHandler.class).toProvider(ServletContextHandlerProvider.class).in(Singleton.class);
-		bind(Server.class).toProvider(ServerProvider.class).in(Singleton.class);
+		bind(ServletContextHandler.class).toProvider(ServletContextHandlerProvider.class);
+		bind(Server.class).toProvider(ServerProvider.class);
 		bind(ServletContext.class).toProvider(ServletContextProvider.class);
 	}
 	private static class ServletContextHandlerProvider implements Provider<ServletContextHandler> {
@@ -91,13 +91,12 @@ public class JettyModule extends AbstractModule {
 
 		private ResourceHandler getResourceHandler() {
 			try {
-				//Resource res = Resource.newResource("C:\\Users\\86135\\Videos", false);
 				String fileStoragePath = System.getProperty("server.resources.folder", System.getProperty("user.dir")+ File.separator+"src"+File.separator+"main"+File.separator+"resources"+File.separator+"static");
 				Resource res = Resource.newResource(fileStoragePath, false);
 				ResourceHandler resourceHandler = new ResourceHandler();
 				resourceHandler.setDirectoriesListed(true);
 				resourceHandler.setBaseResource(res);
-				//resourceHandler.setDirAllowed(true);
+				resourceHandler.setDirAllowed(true);
 				return resourceHandler;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

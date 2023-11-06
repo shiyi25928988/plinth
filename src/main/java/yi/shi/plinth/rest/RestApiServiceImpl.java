@@ -19,11 +19,11 @@ import javax.ws.rs.HEAD;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 
 import yi.shi.plinth.annotation.Properties;
-import yi.shi.plinth.annotation.RequestBody;
+import yi.shi.plinth.annotation.http.HttpBody;
+import yi.shi.plinth.annotation.http.HttpParam;
+import yi.shi.plinth.annotation.http.HttpPath;
 import yi.shi.plinth.exception.EmptyPathParameterException;
 import yi.shi.plinth.exception.ReduplicativeMathodPathException;
 import yi.shi.plinth.exception.SingleRequestBodyRequiredException;
@@ -148,14 +148,14 @@ public class RestApiServiceImpl implements RestApiService {
 	 */
 	private void setMethodAndClassMap(Class<?> clazz, Method method, Map<String, Method> methodMap)
 			throws ReduplicativeMathodPathException, EmptyPathParameterException, SingleRequestBodyRequiredException {
-		if (method.isAnnotationPresent(Path.class)) {
-			Path path = method.getAnnotation(Path.class);
-			if (!Strings.isNullOrEmpty(path.value())) {
-				if (Objects.nonNull(methodMap.get(path.value()))) {
-					throw new ReduplicativeMathodPathException("Request Path is already exist with : " + path.value());
+		if (method.isAnnotationPresent(HttpPath.class)) {
+			HttpPath httpPath = method.getAnnotation(HttpPath.class);
+			if (!Strings.isNullOrEmpty(httpPath.value())) {
+				if (Objects.nonNull(methodMap.get(httpPath.value()))) {
+					throw new ReduplicativeMathodPathException("Request Path is already exist with : " + httpPath.value());
 				}
-				methodMap.put(path.value(), method);
-				classMap.put(path.value(), clazz);
+				methodMap.put(httpPath.value(), method);
+				classMap.put(httpPath.value(), clazz);
 				addMethodParameter(method);
 			}
 		}
@@ -173,16 +173,16 @@ public class RestApiServiceImpl implements RestApiService {
 		List<String> list = new LinkedList<>();
 
 		for (Parameter param : method.getParameters()) {
-			if (param.isAnnotationPresent(PathParam.class)) {
-				PathParam pathParam = (PathParam) param.getAnnotation(PathParam.class);
-				if (Strings.isNullOrEmpty(pathParam.value())) {
+			if (param.isAnnotationPresent(HttpParam.class)) {
+				HttpParam httpParam = param.getAnnotation(HttpParam.class);
+				if (Strings.isNullOrEmpty(httpParam.value())) {
 					throw new EmptyPathParameterException();
 				} else {
-					list.add(pathParam.value());
+					list.add(httpParam.value());
 				}
 			} else
 
-			if (param.isAnnotationPresent(RequestBody.class)) {
+			if (param.isAnnotationPresent(HttpBody.class)) {
 				if (Objects.nonNull(requestBodyMap.get(method))) {
 					throw new SingleRequestBodyRequiredException(method.getName() + " required single parameter!!");
 				}

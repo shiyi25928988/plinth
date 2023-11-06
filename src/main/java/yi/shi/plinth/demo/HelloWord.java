@@ -2,13 +2,12 @@ package yi.shi.plinth.demo;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-
 
 import com.google.inject.Inject;
 import yi.shi.plinth.annotation.Restful;
-import yi.shi.plinth.annotation.RequestBody;
+import yi.shi.plinth.annotation.http.HttpBody;
+import yi.shi.plinth.annotation.http.HttpParam;
+import yi.shi.plinth.annotation.http.HttpPath;
 import yi.shi.plinth.http.result.JSON;
 import yi.shi.plinth.jetty.JettyBootService;
 import lombok.AllArgsConstructor;
@@ -21,37 +20,37 @@ public class HelloWord {
 	JettyBootService jettyBootService;
 
 	@GET
-	@Path(value = "/hello")
+	@HttpPath(value = "/hello")
 	public JSON<String> hello() {
 		return new JSON<String>("Hello world");
 	}
 	
 	@GET
-	@Path(value = "/hello2")
+	@HttpPath(value = "/hello2")
 	public JSON<TestPojo> hello2() {
 		return new JSON<TestPojo>(new TestPojo("SHIYI","30"));
 	}
 	
 	@GET
-	@Path(value = "/hello3")
-	public JSON<String> hello3(@PathParam(value = "name") String name) {
+	@HttpPath(value = "/hello3")
+	public JSON<String> hello3(@HttpParam(value = "name") String name) {
 		return new JSON<String>("Hello " + name);
 	}
 
 	@POST
-	@Path(value = "/hello4")
-	public JSON<String> hello4(@RequestBody String name) {
+	@HttpPath(value = "/hello4")
+	public JSON<String> hello4(@HttpBody String name) {
 		return new JSON<String>("Hello " + name);
 	}
 
 	@POST
-	@Path(value = "/hello5")
-	public JSON<String> hello4(@RequestBody DemoObj user) {
+	@HttpPath(value = "/hello5")
+	public JSON<String> hello4(@HttpBody DemoObj user) {
 		return new JSON<String>("Hello " + user.getName());
 	}
 
 	@GET
-	@Path(value = "/SHUTDOWN")
+	@HttpPath(value = "/SHUTDOWN")
 	public JSON<String> shutdown() {
 		jettyBootService.stop();
 		return new JSON<String>("shutting down...");
