@@ -2,7 +2,6 @@ package yi.shi.plinth.auth;
 
 import cn.dev33.satoken.stp.StpInterface;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RoleStpInterface implements StpInterface {
@@ -15,6 +14,6 @@ public class RoleStpInterface implements StpInterface {
 
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
-        return Roles.getRoles(loginId);
+        return RolesHelper.getRoles(loginId);
     }
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class Roles {
+public final class RolesHelper {
 
     private static Map<Object, List<String>> map = new ConcurrentHashMap<>();
 
@@ -16,6 +16,7 @@ public final class Roles {
             map.put(id, roles);
         }
     }
+
     public static void addRole(Object id, String role){
         if(map.containsKey(id)){
             map.get(id).add(role);

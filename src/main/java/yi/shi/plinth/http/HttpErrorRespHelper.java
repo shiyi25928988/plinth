@@ -21,7 +21,7 @@ public final class HttpErrorRespHelper {
      * 403 Forbidden
      * */
     public static void send403(String msg) throws IOException {
-        ErrorMessage errorMessage = new ErrorMessage("403 Forbidden ".concat(msg), HttpStatusCode.SC_FORBIDDEN);
+        ErrorMessage errorMessage = new ErrorMessage("403 Forbidden. Need roles : ".concat(msg), HttpStatusCode.SC_FORBIDDEN);
         HttpRespHelper.sendResponseData(errorMessage, HttpStatusCode.SC_FORBIDDEN);
     }
     public static void send403Page() {
