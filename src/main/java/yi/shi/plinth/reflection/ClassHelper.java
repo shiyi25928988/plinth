@@ -6,8 +6,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import yi.shi.plinth.annotation.Restful;
-import lombok.extern.slf4j.Slf4j;
+import yi.shi.plinth.annotation.http.HttpService;
 
 /**
  * @author yshi
@@ -27,7 +26,7 @@ public final class ClassHelper {
      * @throws IOException
      */
     public static Set<Class<?>> getControllers(String scanPackageName) throws ClassNotFoundException, IOException {
-        Set<Class<?>> classSet = pickClassByAnnotation(ClassHelper.getClassSetFromPackage(scanPackageName), Restful.class);
+        Set<Class<?>> classSet = pickClassByAnnotation(ClassHelper.getClassSetFromPackage(scanPackageName), HttpService.class);
         return classSet;
     }
 

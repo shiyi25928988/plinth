@@ -1,13 +1,13 @@
 package yi.shi.plinth.http.controller;
 
-import yi.shi.plinth.annotation.Restful;
+import yi.shi.plinth.annotation.http.HttpService;
 import yi.shi.plinth.annotation.http.HttpPath;
 import yi.shi.plinth.http.MimeType;
 import yi.shi.plinth.http.result.BINARY;
 
 import yi.shi.plinth.annotation.http.Method.GET;
 
-@Restful
+@HttpService
 public class FaviconController {
     @GET
     @HttpPath("/favicon.ico")

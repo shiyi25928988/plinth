@@ -1,4 +1,4 @@
-package yi.shi.plinth.annotation;
+package yi.shi.plinth.annotation.http;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,6 +11,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface Restful {
+public @interface HttpService {
 
 }

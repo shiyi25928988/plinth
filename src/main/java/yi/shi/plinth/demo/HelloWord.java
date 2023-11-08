@@ -4,7 +4,7 @@ import yi.shi.plinth.annotation.http.Method.GET;
 import yi.shi.plinth.annotation.http.Method.POST;
 
 import com.google.inject.Inject;
-import yi.shi.plinth.annotation.Restful;
+import yi.shi.plinth.annotation.http.HttpService;
 import yi.shi.plinth.annotation.http.HttpBody;
 import yi.shi.plinth.annotation.http.HttpParam;
 import yi.shi.plinth.annotation.http.HttpPath;
@@ -13,7 +13,7 @@ import yi.shi.plinth.jetty.JettyBootService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-@Restful
+@HttpService
 public class HelloWord {
 
 	@Inject
