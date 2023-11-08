@@ -238,7 +238,7 @@ public class RestApiServiceImpl implements RestApiService {
 			}
 			if (auth.roles().length > 0) {
 				try {
-					StpUtil.checkRoleAnd(auth.roles());
+					StpUtil.checkRoleOr(auth.roles());
 				}catch (Exception e){
 					HttpErrorRespHelper.send403("absent roles : " + StringUtils.join(auth.roles(), ","));
 				}
