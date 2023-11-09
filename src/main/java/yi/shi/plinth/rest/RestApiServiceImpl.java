@@ -236,11 +236,18 @@ public class RestApiServiceImpl implements RestApiService {
 			}catch (Exception e){
 				HttpErrorRespHelper.send401();
 			}
-			if (auth.roles().length > 0) {
+			if (auth.andRole().length > 0) {
 				try {
-					StpUtil.checkRoleOr(auth.roles());
+					StpUtil.checkRoleAnd(auth.andRole());
 				}catch (Exception e){
-					HttpErrorRespHelper.send403("absent roles : " + StringUtils.join(auth.roles(), ","));
+					HttpErrorRespHelper.send403("this API need these roles : " + StringUtils.join(auth.andRole(), ","));
+				}
+			}
+			if (auth.orRole().length > 0) {
+				try {
+					StpUtil.checkRoleAnd(auth.orRole());
+				}catch (Exception e){
+					HttpErrorRespHelper.send403("this API need these roles : " + StringUtils.join(auth.orRole(), ","));
 				}
 			}
 		}
