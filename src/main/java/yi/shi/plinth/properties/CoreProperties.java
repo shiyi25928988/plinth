@@ -1,12 +1,14 @@
 package yi.shi.plinth.properties;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.io.InputStream;
+import java.util.Objects;
 
 import com.google.common.base.Strings;
 
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
+import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.jetty.client.api.ContentResponse;
 
 /**
  * @author shiyi
@@ -14,18 +16,43 @@ import lombok.extern.slf4j.Slf4j;
  */
 public class CoreProperties {
 	
-	private static Map<String, String> propertiesFileRegister = new ConcurrentHashMap<>();
+	//private static Map<String, String> propertiesFileRegister = new ConcurrentHashMap<>();
 
 	public static void setProperties(String propertiesFileName) {
-		propertiesFileRegister.put(propertiesFileName, propertiesFileName);
+		//propertiesFileRegister.put(propertiesFileName, propertiesFileName);
+		if(propertiesFileName.toLowerCase().startsWith("http:") || propertiesFileName.toLowerCase().startsWith("https:")){
+			setRemoteProperties(propertiesFileName);
+			return;
+		}
 		try {
 			System.getProperties().load(Thread.currentThread().getContextClassLoader().getResourceAsStream(propertiesFileName));
 		} catch (IOException e) {
 			e.printStackTrace();
-			propertiesFileRegister.remove(propertiesFileName);
+			//propertiesFileRegister.remove(propertiesFileName);
 		}
 	}
-	
+
+	public static void setRemoteProperties(String url) {
+		HttpClient httpClient = null;
+		try {
+			httpClient = new HttpClient();
+			httpClient.start();
+			ContentResponse response = httpClient.GET(url);
+			InputStream inputStream = IOUtils.toInputStream(response.getContentAsString(), "UTF-8");
+			System.getProperties().load(inputStream);
+		}catch (Exception e){
+			e.printStackTrace();
+		}finally {
+			if(Objects.nonNull(httpClient)){
+				try {
+					httpClient.stop();
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+	}
+
 	/**
 	 * @param key
 	 * @return
