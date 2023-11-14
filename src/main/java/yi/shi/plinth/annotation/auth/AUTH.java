@@ -13,4 +13,6 @@ public @interface AUTH {
 
     String[] orRole() default {};
 
+    String authUrl() default "";
+
 }

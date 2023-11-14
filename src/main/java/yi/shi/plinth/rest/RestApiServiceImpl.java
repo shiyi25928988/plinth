@@ -234,7 +234,11 @@ public class RestApiServiceImpl implements RestApiService {
 			try {
 				StpUtil.checkLogin();
 			}catch (Exception e){
-				HttpErrorRespHelper.send401();
+				if(!Strings.isNullOrEmpty(auth.authUrl())){
+					ServletHelper.getResponse().sendRedirect(auth.authUrl());
+				}else {
+					HttpErrorRespHelper.send401();
+				}
 			}
 			if (auth.andRole().length > 0) {
 				try {
