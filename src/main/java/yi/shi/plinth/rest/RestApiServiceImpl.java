@@ -236,6 +236,7 @@ public class RestApiServiceImpl implements RestApiService {
 			}catch (Exception e){
 				if(!Strings.isNullOrEmpty(auth.authUrl())){
 					ServletHelper.getResponse().sendRedirect(auth.authUrl());
+					return;
 				}else {
 					HttpErrorRespHelper.send401();
 				}
