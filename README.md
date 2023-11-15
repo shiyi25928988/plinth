@@ -4,7 +4,7 @@
 plinth是一个轻量级的web框架（随便起了个名字，它总得有个名字）
 
 
-由于需要经常开发一些轻量级的单体web应用，所以开发了这个框架。
+由于需要经常快速开发一些轻量级的单体web应用，所以开发了这个框架。
 
 底层依赖了Guice 和 Jetty ,没有使用*Springboot*
 
@@ -94,6 +94,22 @@ public class TestServiceImpl implements TestService {
 ```
 > 注意：只能注入String类型，其他 int float 等类型，请自己转换
 
+返回类型的问题：
+这个框架里定义了 HTML， JSON<T> ， BINARY 三种类型， 均继承自ReturnType接口，为了定义返回的页面、json、图片等
+例如：我用J2HTML实现一个页面，就可以通过HTML类型返回
+```
+@HttpService
+public class LoginPage {
+
+    @GET
+    @HttpPath(value = "/page/login")
+    HTML loginPage(){
+        HTML html = new HTML();
+            html.setHtmlContent(html(
+                head(
+                    title("login page"),
+                    ... 
+```
 6. 数据库的使用
 mybatis提供了guice版本的，可以直接使用
 
@@ -155,3 +171,129 @@ public class DataSourceModule extends MyBatisModule {
 还可以通过以下配置静态资源的访问
 server.resources.context= //这里是静态资源的http路径， 如果不配置，默认值是 /static
 server.resources.folder=  //这里是实际指向当前服务器的实际地址 ， 默认值是 代码中/resources/static路径
+
+
+8. 其他
+plinth 可以作为类似于nginx的web容器来使用，依仗的是jetty的静态资源服务功能，
+我们曾经在这个框架上部署过一个编译好的vue项目，不需要实现任何接口，只需在配置文件中将 `server.resources.context=/` 静态资源context设置成域的根path,
+然后将 `server.resources.folder=`指向存放vue项目编译出来的dist文件夹
+
+9. 编译构建
+没有整合build  plugin 下面贴出可用的配置，如果哪位同学觉得可以优化的，请联系我
+```xml
+<build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${maven.plugin.version}</version>
+                <configuration>
+                    <!-- 此处按需编写更具体的配置 -->
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>**/module-info.class</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
+                <executions>
+                    <execution>
+                        <!-- 和 package 阶段绑定 -->
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${maven.plugin.version}</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>application.Main</mainClass>
+                            <!--  这里是启动类    -->
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${maven.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>
+                                ${project.build.directory}/lib
+                            </outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>copy-static</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/src/main/resources/static</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/src/main/resources/static</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven.plugin.version}</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>application.Main</mainClass>
+                            <!--  这里是启动类    -->
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+
+    </build>
+```
