@@ -39,8 +39,12 @@ public class DispatcherServlet extends HttpServlet {
 	private static final String METHOD_PUT = "PUT";
 	private static final String METHOD_TRACE = "TRACE";
 
-	RestApiService restService = new RestApiServiceImpl();
-	
+	private static RestApiService restService;// = new RestApiServiceImpl();
+
+	public static void initRestApiService(){
+		restService = new RestApiServiceImpl();
+	}
+
 	private ServletContext servletContext;
 
 	@Override

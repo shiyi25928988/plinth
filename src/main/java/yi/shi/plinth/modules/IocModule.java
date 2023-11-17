@@ -9,6 +9,7 @@ import com.google.inject.name.Names;
 
 import yi.shi.plinth.reflection.ClassHelper;
 import lombok.extern.slf4j.Slf4j;
+import yi.shi.plinth.servlet.DispatcherServlet;
 
 /**
  * @author yshi
@@ -29,6 +30,10 @@ public class IocModule extends AbstractModule {
 		} catch (ClassNotFoundException | IOException e) {
 			log.error(e.getMessage());
 			System.exit(1);
+		}finally {
+			if(!controllerClassSet.isEmpty()) {
+				DispatcherServlet.initRestApiService();
+			}
 		}
 	}
 
