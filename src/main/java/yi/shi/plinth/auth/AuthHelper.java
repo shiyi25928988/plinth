@@ -8,14 +8,14 @@ import java.util.List;
 
 public final class AuthHelper {
 
-    public static void login(Long userId, String...roles){
-        RolesHelper.addRoles(userId, Lists.newArrayList(roles));
-        StpUtil.login(userId);
+    public static void login(Object user, String...roles){
+        RolesHelper.addRoles(user, Lists.newArrayList(roles));
+        StpUtil.login(user);
     }
 
-    public static void login(Long userId, List<String> roles){
-        RolesHelper.addRoles(userId, roles);
-        StpUtil.login(userId);
+    public static void login(Object user, List<String> roles){
+        RolesHelper.addRoles(user, roles);
+        StpUtil.login(user);
     }
 
     public static void logout() {

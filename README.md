@@ -178,7 +178,24 @@ plinth 可以作为类似于nginx的web容器来使用，依仗的是jetty的静
 我们曾经在这个框架上部署过一个编译好的vue项目，不需要实现任何接口，只需在配置文件中将 `server.resources.context=/` 静态资源context设置成域的根path,
 然后将 `server.resources.folder=`指向存放vue项目编译出来的dist文件夹
 
-9. 编译构建
+web应用的混合模式，通过`server.hybrid=true`配置开启, 静态资源和HTTP接口共享 root context, 通过静态服务启动的web页面,可以直接调用@HttpPath声明的http接口,
+打开混合模式后 server.resources.context= 配置将会失效
+
+9. 权限认证
+plint 集成了SA-TOKEN, 通过@AUTH 注解实现对 http接口的 小颗粒度的权限控制
+```
+    @AUTH(orRole = "admin", authUrl = "/page/login")
+    @GET
+    @HttpPath("/testAuth")
+    public JSON<String> testAuth(){
+        
+```
+@AUTH认证失败，默认返回401错误，也可以通过 authUrl 参数跳转到 登陆页面
+@AUTH中的角色控制，角色字符串数组类型，可以传递给 orRole 或 andRole， orRole中满足一个角色即可，andRole则需满足所有角色
+登陆接口可以使用sa-token的工具类StpUtil 登陆 ，或者使用 AuthHelper 的 login(Object user, String...roles)
+> 框架已经引入SA-TOKEN ， 无需再自己引入依赖
+
+10. 编译构建
 没有整合build  plugin 下面贴出可用的配置，如果哪位同学觉得可以优化的，请联系我
 ```xml
 <build>

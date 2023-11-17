@@ -61,9 +61,22 @@ public class JettyModule extends AbstractModule {
 
 		@Override
 		public Server get() {
-
+			String _hybrid = System.getProperty("server.hybrid", "false");
+			Boolean hybrid = Boolean.parseBoolean(_hybrid);
 			HandlerList handlerList = new HandlerList();
-			{
+			if(hybrid){
+				//within hybrid mode , only 'server.resources.folder' works, api path will share context path with staic resource
+				servletContextHandler.setContextPath("/");
+				servletContextHandler.addServlet(DispatcherServlet.class, "/*");
+				servletContextHandler.addFilter(
+						GuiceFilter.class,
+						"/*",
+						EnumSet.of(DispatcherType.REQUEST));
+				servletContextHandler.getServletHandler()
+						.addListener(new ListenerHolder(GuiceServletCustomContextListener.class));
+				servletContextHandler.insertHandler(getResourceHandler());
+				handlerList.addHandler(servletContextHandler);
+			}else{
 				servletContextHandler.setContextPath("/");
 				servletContextHandler.addServlet(DispatcherServlet.class, "/*");
 				servletContextHandler.addFilter(
@@ -73,8 +86,7 @@ public class JettyModule extends AbstractModule {
 				servletContextHandler.getServletHandler()
 						.addListener(new ListenerHolder(GuiceServletCustomContextListener.class));
 				handlerList.addHandler(servletContextHandler);
-			}
-			{
+				//non-hybrid mode will separate api and static resource context
 				ServletContextHandler resourceHandler = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
 				resourceHandler.setContextPath(System.getProperty("server.resources.context", ("/static/*")));
 				resourceHandler.insertHandler(getResourceHandler());
@@ -82,7 +94,6 @@ public class JettyModule extends AbstractModule {
 			}
 
 			port = Integer.parseInt(System.getProperty("server.port", "8080"));
-			
 			Server server = new Server(port);
 			server.setStopAtShutdown(true);
 			server.setHandler(handlerList);
