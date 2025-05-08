@@ -1,8 +1,6 @@
 package yi.shi.plinth.modules;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.EnumSet;
 
 
@@ -11,19 +9,15 @@ import jakarta.servlet.DispatcherType;
 import jakarta.servlet.ServletContext;
 import org.eclipse.jetty.ee10.servlet.ListenerHolder;
 import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.util.resource.PathResource;
 import org.eclipse.jetty.util.resource.ResourceFactory;
 import yi.shi.plinth.servlet.DispatcherServlet;
 import yi.shi.plinth.servlet.GuiceServletCustomContextListener;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.util.resource.Resource;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.Singleton;
 
 /**
  * @author shiyi
@@ -90,6 +84,7 @@ public class JettyModule extends AbstractModule {
 				ServletContextHandler resourceHandler = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
 				resourceHandler.setContextPath(System.getProperty("server.resources.context", ("/static/*")));
 				resourceHandler.insertHandler(getResourceHandler());
+				servletContextHandler.insertHandler(resourceHandler);
 			}
 
 			port = Integer.parseInt(System.getProperty("server.port", "8080"));
@@ -100,7 +95,7 @@ public class JettyModule extends AbstractModule {
 		}
 
 		private ResourceHandler getResourceHandler() {
-            String fileStoragePath = System.getProperty("server.resources.folder", System.getProperty("user.dir")+ File.separator+"src"+File.separator+"main"+File.separator+"resources"+File.separator+"static");
+            String fileStoragePath = System.getProperty("server.resources.folder", System.getProperty("user.dir")+ File.separator+"src"+File.separator+"main"+File.separator+ "" +File.separator+"static");
             //Resource res = new PathResource.(Path.of(fileStoragePath));
             ResourceHandler resourceHandler = new ResourceHandler();
             resourceHandler.setBaseResource(ResourceFactory.of(resourceHandler).newResource(fileStoragePath));
