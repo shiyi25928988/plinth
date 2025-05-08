@@ -2,19 +2,22 @@ package yi.shi.plinth.modules;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.EnumSet;
 
-import javax.servlet.DispatcherType;
-import javax.servlet.ServletContext;
 
 import com.google.inject.servlet.GuiceFilter;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.ServletContext;
+import org.eclipse.jetty.ee10.servlet.ListenerHolder;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.util.resource.PathResource;
+import org.eclipse.jetty.util.resource.ResourceFactory;
 import yi.shi.plinth.servlet.DispatcherServlet;
 import yi.shi.plinth.servlet.GuiceServletCustomContextListener;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.servlet.ListenerHolder;
-import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.resource.Resource;
 
 import com.google.inject.AbstractModule;
@@ -63,7 +66,6 @@ public class JettyModule extends AbstractModule {
 		public Server get() {
 			String _hybrid = System.getProperty("server.hybrid", "false");
 			Boolean hybrid = Boolean.parseBoolean(_hybrid);
-			HandlerList handlerList = new HandlerList();
 			if(hybrid){
 				//within hybrid mode , only 'server.resources.folder' works, api path will share context path with staic resource
 				servletContextHandler.setContextPath("/");
@@ -75,7 +77,6 @@ public class JettyModule extends AbstractModule {
 				servletContextHandler.getServletHandler()
 						.addListener(new ListenerHolder(GuiceServletCustomContextListener.class));
 				servletContextHandler.insertHandler(getResourceHandler());
-				handlerList.addHandler(servletContextHandler);
 			}else{
 				servletContextHandler.setContextPath("/");
 				servletContextHandler.addServlet(DispatcherServlet.class, "/*");
@@ -85,36 +86,30 @@ public class JettyModule extends AbstractModule {
 						EnumSet.of(DispatcherType.REQUEST));
 				servletContextHandler.getServletHandler()
 						.addListener(new ListenerHolder(GuiceServletCustomContextListener.class));
-				handlerList.addHandler(servletContextHandler);
 				//non-hybrid mode will separate api and static resource context
 				ServletContextHandler resourceHandler = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
 				resourceHandler.setContextPath(System.getProperty("server.resources.context", ("/static/*")));
 				resourceHandler.insertHandler(getResourceHandler());
-				handlerList.prependHandler(resourceHandler);
 			}
 
 			port = Integer.parseInt(System.getProperty("server.port", "8080"));
 			Server server = new Server(port);
 			server.setStopAtShutdown(true);
-			server.setHandler(handlerList);
+			server.setHandler(servletContextHandler);
 			return server;
 		}
 
 		private ResourceHandler getResourceHandler() {
-			try {
-				String fileStoragePath = System.getProperty("server.resources.folder", System.getProperty("user.dir")+ File.separator+"src"+File.separator+"main"+File.separator+"resources"+File.separator+"static");
-				Resource res = Resource.newResource(fileStoragePath, false);
-				ResourceHandler resourceHandler = new ResourceHandler();
-				resourceHandler.setDirectoriesListed(true);
-				resourceHandler.setBaseResource(res);
-				resourceHandler.setDirAllowed(true);
-				return resourceHandler;
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return null;
-		}
+            String fileStoragePath = System.getProperty("server.resources.folder", System.getProperty("user.dir")+ File.separator+"src"+File.separator+"main"+File.separator+"resources"+File.separator+"static");
+            //Resource res = new PathResource.(Path.of(fileStoragePath));
+            ResourceHandler resourceHandler = new ResourceHandler();
+            resourceHandler.setBaseResource(ResourceFactory.of(resourceHandler).newResource(fileStoragePath));
+            resourceHandler.setEtags(true);
+            resourceHandler.setDirAllowed(true);
+			resourceHandler.setCacheControl("max-age=3600");
+			resourceHandler.setAcceptRanges(true);
+            return resourceHandler;
+        }
 	}
 
 }

@@ -2,16 +2,9 @@ package yi.shi.plinth.servlet;
 
 import java.io.IOException;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import cn.dev33.satoken.SaManager;
 import cn.dev33.satoken.context.SaTokenContextForThreadLocal;
-import cn.dev33.satoken.context.SaTokenContextForThreadLocalStorage;
 import cn.dev33.satoken.context.model.SaRequest;
 import cn.dev33.satoken.context.model.SaResponse;
 import cn.dev33.satoken.context.model.SaStorage;
@@ -19,6 +12,12 @@ import cn.dev33.satoken.servlet.model.SaRequestForServlet;
 import cn.dev33.satoken.servlet.model.SaResponseForServlet;
 import cn.dev33.satoken.servlet.model.SaStorageForServlet;
 
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import yi.shi.plinth.auth.RoleStpInterface;
 import yi.shi.plinth.rest.RestApiService;
 import yi.shi.plinth.rest.RestApiServiceImpl;
@@ -121,8 +120,9 @@ public class DispatcherServlet extends HttpServlet {
 		SaRequest saRequest = new SaRequestForServlet(ServletHelper.getRequest());
 		SaResponse saResponse = new SaResponseForServlet(ServletHelper.getResponse());
 		SaStorage storage = new SaStorageForServlet(ServletHelper.getRequest());
-		SaTokenContextForThreadLocalStorage.setBox(saRequest, saResponse, storage);
-		SaManager.setSaTokenContext(new SaTokenContextForThreadLocal());
+		SaTokenContextForThreadLocal saTokenContextForThreadLocal = new SaTokenContextForThreadLocal();
+		saTokenContextForThreadLocal.setContext(saRequest, saResponse, storage);
+		SaManager.setSaTokenContext(saTokenContextForThreadLocal);
 		SaManager.setStpInterface(new RoleStpInterface());
 	}
 

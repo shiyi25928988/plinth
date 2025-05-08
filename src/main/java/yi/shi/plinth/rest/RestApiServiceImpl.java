@@ -13,9 +13,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
-import javax.servlet.http.HttpServletRequest;
-
 import cn.dev33.satoken.stp.StpUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import yi.shi.plinth.annotation.auth.AUTH;
 import yi.shi.plinth.annotation.http.Method.DELETE;
 import yi.shi.plinth.annotation.http.Method.GET;
@@ -270,7 +269,7 @@ public class RestApiServiceImpl implements RestApiService {
 				Injector injector = ModuleRegister.getInjector();
 				Stream.of(fields).forEach(field -> {
 					if (field.isAnnotationPresent(com.google.inject.Inject.class)
-							|| field.isAnnotationPresent(javax.inject.Inject.class)) {
+							|| field.isAnnotationPresent(jakarta.inject.Inject.class)) {
 						try {
 							ReflectionUtils.setField(obj, field, injector.getInstance(field.getType()));
 						} catch (Exception e) {

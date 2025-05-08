@@ -1,9 +1,9 @@
 package yi.shi.plinth.http;
 
+import jakarta.servlet.http.HttpServletRequest;
 import yi.shi.plinth.servlet.ServletHelper;
 import yi.shi.plinth.utils.json.JsonUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 public final class HttpReqHelper {

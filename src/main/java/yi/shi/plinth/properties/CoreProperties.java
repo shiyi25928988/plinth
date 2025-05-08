@@ -7,8 +7,8 @@ import java.util.Objects;
 import com.google.common.base.Strings;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.jetty.client.ContentResponse;
 import org.eclipse.jetty.client.HttpClient;
-import org.eclipse.jetty.client.api.ContentResponse;
 
 /**
  * @author shiyi
