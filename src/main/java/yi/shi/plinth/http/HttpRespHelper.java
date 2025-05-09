@@ -11,7 +11,7 @@ import yi.shi.plinth.exception.UnsupportMIMETypeException;
 import yi.shi.plinth.http.result.JSON;
 import yi.shi.plinth.http.result.ReturnType;
 import yi.shi.plinth.servlet.ServletHelper;
-import yi.shi.plinth.utils.json.JsonUtils;
+import yi.shi.plinth.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 

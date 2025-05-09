@@ -2,7 +2,7 @@ package yi.shi.plinth.http;
 
 import jakarta.servlet.http.HttpServletRequest;
 import yi.shi.plinth.servlet.ServletHelper;
-import yi.shi.plinth.utils.json.JsonUtils;
+import yi.shi.plinth.utils.JsonUtils;
 
 import java.io.IOException;
 

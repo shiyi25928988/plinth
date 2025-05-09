@@ -1,6 +1,7 @@
 package yi.shi.plinth.demo;
 
 import yi.shi.plinth.annotation.auth.AUTH;
+import yi.shi.plinth.annotation.cache.ControllerCache;
 import yi.shi.plinth.annotation.http.Method.GET;
 import yi.shi.plinth.annotation.http.Method.POST;
 
@@ -22,9 +23,15 @@ public class HelloWord {
 
 	@GET
 	@HttpPath(value = "/hello")
-	@AUTH
+//	@AUTH
+	@ControllerCache(name = "hello")
 	public JSON<String> hello() {
-		return new JSON<String>("Hello world");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return new JSON<String>("Hello world");
 	}
 	
 
