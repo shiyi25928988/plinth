@@ -1,5 +1,6 @@
 package yi.shi.plinth.demo;
 
+import yi.shi.plinth.annotation.auth.AUTH;
 import yi.shi.plinth.annotation.http.Method.GET;
 import yi.shi.plinth.annotation.http.Method.POST;
 
@@ -21,6 +22,7 @@ public class HelloWord {
 
 	@GET
 	@HttpPath(value = "/hello")
+	@AUTH
 	public JSON<String> hello() {
 		return new JSON<String>("Hello world");
 	}
