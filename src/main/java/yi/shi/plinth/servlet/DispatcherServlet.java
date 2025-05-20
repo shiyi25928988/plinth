@@ -18,6 +18,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import yi.shi.plinth.auth.RedisSaTokenDao;
 import yi.shi.plinth.auth.RoleStpInterface;
 import yi.shi.plinth.rest.RestApiService;
 import yi.shi.plinth.rest.RestApiServiceImpl;
@@ -123,6 +124,7 @@ public class DispatcherServlet extends HttpServlet {
 		SaTokenContextForThreadLocal saTokenContextForThreadLocal = new SaTokenContextForThreadLocal();
 		saTokenContextForThreadLocal.setContext(saRequest, saResponse, storage);
 		SaManager.setSaTokenContext(saTokenContextForThreadLocal);
+		SaManager.setSaTokenDao(new RedisSaTokenDao());
 		SaManager.setStpInterface(new RoleStpInterface());
 	}
 

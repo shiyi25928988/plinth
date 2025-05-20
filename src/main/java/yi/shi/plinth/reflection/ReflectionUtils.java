@@ -4,17 +4,14 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.time.Duration;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
-import com.google.common.cache.CacheBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
-import yi.shi.plinth.annotation.cache.ControllerCache;
+import yi.shi.plinth.annotation.cache.ApiCache;
 import yi.shi.plinth.utils.MD5Util;
 
 /**
@@ -55,8 +52,8 @@ public final class ReflectionUtils {
 	public static Object invokeMethod(Object obj, Method method, Object...args) throws Exception {
 		Object result = null;
 		method.setAccessible(true);
-		if(method.isAnnotationPresent(ControllerCache.class)){
-			ControllerCache controllerCache = method.getAnnotation(ControllerCache.class);
+		if(method.isAnnotationPresent(ApiCache.class)){
+			ApiCache controllerCache = method.getAnnotation(ApiCache.class);
 			String key = controllerCache.name().concat("#").concat(MD5Util.md5(args));
 
 			if(controllerCache.name().length()>0){

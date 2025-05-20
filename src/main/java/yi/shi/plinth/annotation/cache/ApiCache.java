@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit;
 
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ControllerCache {
+public @interface ApiCache {
     String name();
+    long expire() default 0;
+    TimeUnit timeUnit() default TimeUnit.SECONDS;
 }
