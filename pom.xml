@@ -35,6 +35,12 @@
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>${guice.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>guava</artifactId>
+                    <groupId>com.google.guava</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.google.inject.extensions</groupId>
@@ -109,6 +115,12 @@
             <groupId>org.eclipse.jetty.ee10</groupId>
             <artifactId>jetty-ee10-servlet</artifactId>
             <version>${jetty.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jakarta.servlet-api</artifactId>
+                    <groupId>jakarta.servlet</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty.ee10</groupId>
@@ -134,6 +146,12 @@
             <groupId>cn.dev33</groupId>
             <artifactId>sa-token-jakarta-servlet</artifactId>
             <version>${sa-token.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jakarta.servlet-api</artifactId>
+                    <groupId>jakarta.servlet</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>

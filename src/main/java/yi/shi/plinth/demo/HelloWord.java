@@ -1,5 +1,7 @@
 package yi.shi.plinth.demo;
 
+import cn.dev33.satoken.session.SaSession;
+import cn.dev33.satoken.stp.StpUtil;
 import yi.shi.plinth.annotation.cache.ApiCache;
 import yi.shi.plinth.annotation.http.Method.GET;
 
@@ -26,6 +28,14 @@ public class HelloWord {
             throw new RuntimeException(e);
         }
         return new JSON<String>("Hello world");
+	}
+
+	@GET
+	@HttpPath(value = "/hello2")
+	public JSON<SaSession> hello2() {
+		StpUtil.login("root");
+		SaSession session = StpUtil.getSessionByLoginId("root", true);
+		return new JSON<SaSession>(session);
 	}
 	
 
