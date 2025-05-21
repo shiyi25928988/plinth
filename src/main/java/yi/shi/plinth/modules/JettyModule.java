@@ -70,13 +70,14 @@ public class JettyModule extends AbstractModule {
 		public Server get() {
 			ContextHandlerCollection contextHandlerCollection = new ContextHandlerCollection();
 			contextHandlerCollection.addHandler(servletContextHandler);
+			contextHandlerCollection.addHandler(getResourceHandler());
 			Server server = new Server(Integer.parseInt(System.getProperty("server.port", "8080")));
 			server.setStopAtShutdown(true);
 			server.setHandler(contextHandlerCollection);
 			return server;
 		}
 
-		private ResourceHandler getResourceHandler() {
+		private ServletContextHandler getResourceHandler() {
             String fileStoragePath = System.getProperty("resources.folder");
             ResourceHandler resourceHandler = new ResourceHandler();
             resourceHandler.setBaseResource(ResourceFactory.of(resourceHandler).newResource(fileStoragePath));
@@ -84,7 +85,10 @@ public class JettyModule extends AbstractModule {
             resourceHandler.setDirAllowed(true);
 			resourceHandler.setCacheControl("max-age=3600");
 			resourceHandler.setAcceptRanges(true);
-            return resourceHandler;
+			ServletContextHandler resourceHandlerContext = new ServletContextHandler();
+			resourceHandlerContext.setContextPath("/static");
+			resourceHandlerContext.insertHandler(resourceHandler);
+            return resourceHandlerContext;
         }
 	}
 
