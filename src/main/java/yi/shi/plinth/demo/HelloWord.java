@@ -2,7 +2,7 @@ package yi.shi.plinth.demo;
 
 import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpUtil;
-import yi.shi.plinth.annotation.cache.ApiCache;
+import yi.shi.plinth.annotation.cache.LocalCache;
 import yi.shi.plinth.annotation.http.Method.GET;
 
 import com.google.inject.Inject;
@@ -20,7 +20,7 @@ public class HelloWord {
 	@GET
 	@HttpPath(value = "/hello")
 //	@AUTH
-	@ApiCache(name = "hello")
+	@LocalCache(name = "hello")
 	public JSON<String> hello() {
         try {
             Thread.sleep(1000);

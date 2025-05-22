@@ -56,23 +56,7 @@ public class SatokenRedisUtil {
     }
 
     private static RedisClient getRedisClient(){
-        return RedisClient.create(getRedisURI());
+        return RedisClient.create(RedisUtil.getRedisURI(0));
     }
 
-    private static RedisURI getRedisURI(){
-        String host = System.getProperty("redis.host");
-        String port = System.getProperty("redis.port","6379");
-        String password = System.getProperty("redis.password","");
-        String database = System.getProperty("redis.database","0");
-
-        RedisURI redisUri = RedisURI
-                .Builder
-                .redis(host)
-                .withPort(Integer.parseInt(port))
-                .withPassword(password)
-                .withDatabase(Integer.parseInt(database))
-                .withTimeout(Duration.ofSeconds(10))
-                .build();
-        return redisUri;
-    }
 }
