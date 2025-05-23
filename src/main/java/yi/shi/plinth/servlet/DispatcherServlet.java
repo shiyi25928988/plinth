@@ -126,7 +126,7 @@ public class DispatcherServlet extends HttpServlet {
 		SaManager.setSaTokenContext(saTokenContextForThreadLocal);
 		SaManager.setSaTokenDao(new RedisSaTokenDao());
 		SaManager.setStpInterface(new RoleStpInterface());
-		SaManager.setConfig(SaManager.getConfig().setTimeout(Long.parseLong(System.getProperty("cookie.expire",  "86400"))));
+		SaManager.setConfig(SaManager.getConfig().setIsPrint(false).setTimeout(Long.parseLong(System.getProperty("cookie.expire",  "86400"))));
 	}
 
 }
