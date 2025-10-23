@@ -46,6 +46,8 @@ public class JettyModule extends AbstractModule {
 			servletContextHandler.addServlet(DispatcherServlet.class, "/*");
 			servletContextHandler.addFilter(GuiceFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
 			servletContextHandler.getServletHandler().addListener(new ListenerHolder(GuiceServletCustomContextListener.class));
+			servletContextHandler.setDefaultRequestCharacterEncoding("UTF-8");
+			servletContextHandler.setDefaultResponseCharacterEncoding("UTF-8");
 			return servletContextHandler;
 		}
 	}
@@ -83,11 +85,25 @@ public class JettyModule extends AbstractModule {
             resourceHandler.setBaseResource(ResourceFactory.of(resourceHandler).newResource(fileStoragePath));
 			resourceHandler.setEtags(true);
             resourceHandler.setDirAllowed(true);
+			resourceHandler.setDynamic(true);
 			resourceHandler.setCacheControl("max-age=3600");
 			resourceHandler.setAcceptRanges(true);
+
 			ServletContextHandler resourceHandlerContext = new ServletContextHandler();
+			resourceHandlerContext.setBaseResource(resourceHandler.getBaseResource());
 			resourceHandlerContext.setContextPath("/static");
+			resourceHandlerContext.setDefaultRequestCharacterEncoding("UTF-8");
+			resourceHandlerContext.setDefaultResponseCharacterEncoding("UTF-8");
 			resourceHandlerContext.insertHandler(resourceHandler);
+
+			List<AliasCheck> aliasChecks = resourceHandlerContext.getContext().getContextHandler().getAliasChecks();
+			if(aliasChecks.isEmpty()){
+				aliasChecks = new ArrayList<>();
+			}
+			//aliasChecks.add(new SymlinkAllowedResourceAliasChecker(resourceHandlerContext.getContext().getContextHandler()));
+			AllowedResourceAliasChecker newAliasChecker = new AllowedResourceAliasChecker(resourceHandlerContext.getContext().getContextHandler(), resourceHandlerContext.getBaseResource());
+			aliasChecks.add(new AllowedResourceAliasChecker(resourceHandlerContext.getContext().getContextHandler()));
+			resourceHandlerContext.getContext().getContextHandler().setAliasChecks(aliasChecks);
             return resourceHandlerContext;
         }
 	}
