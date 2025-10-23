@@ -3,7 +3,7 @@ package yi.shi.plinth.auth;
 import cn.dev33.satoken.dao.SaTokenDao;
 import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.util.SaFoxUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import yi.shi.plinth.utils.JsonUtils;
 import yi.shi.plinth.utils.SatokenRedisUtil;
 
@@ -71,31 +71,23 @@ public class RedisSaTokenDao implements SaTokenDao {
         String value = SatokenRedisUtil.get(key);
         try {
             return JsonUtils.fromJson(value.getBytes(StandardCharsets.UTF_8), classType);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
     public void setObject(String key, Object object, long timeout) {
-        try {
-            SatokenRedisUtil.set(key, JsonUtils.toJson(object), Duration.ofSeconds(timeout));
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        SatokenRedisUtil.set(key, JsonUtils.toJson(object), Duration.ofSeconds(timeout));
     }
 
     @Override
     public void updateObject(String key, Object object) {
-        try {
-            Long expire = SatokenRedisUtil.getExpiration(key);
-            if(expire > 0 ){
-                SatokenRedisUtil.update(key, JsonUtils.toJson(object), Duration.ofSeconds(expire));
-            }else if(expire == -1){
-                SatokenRedisUtil.set(key, JsonUtils.toJson(object));
-            }
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+        Long expire = SatokenRedisUtil.getExpiration(key);
+        if(expire > 0 ){
+            SatokenRedisUtil.update(key, JsonUtils.toJson(object), Duration.ofSeconds(expire));
+        }else if(expire == -1){
+            SatokenRedisUtil.set(key, JsonUtils.toJson(object));
         }
     }
 
@@ -128,22 +120,14 @@ public class RedisSaTokenDao implements SaTokenDao {
 
     @Override
     public void setSession(SaSession session, long timeout) {
-        try {
-            SatokenRedisUtil.set(session.getId(), JsonUtils.toJson(session), Duration.ofSeconds(timeout));
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        SatokenRedisUtil.set(session.getId(), JsonUtils.toJson(session), Duration.ofSeconds(timeout));
     }
 
     @Override
     public void updateSession(SaSession session) {
         if(SatokenRedisUtil.exists(session.getId())){
-            try {
-                Long expire = SatokenRedisUtil.getExpiration(session.getId());
-                SatokenRedisUtil.update(session.getId(), JsonUtils.toJson(session), Duration.ofSeconds(expire));
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
+            Long expire = SatokenRedisUtil.getExpiration(session.getId());
+            SatokenRedisUtil.update(session.getId(), JsonUtils.toJson(session), Duration.ofSeconds(expire));
         }
     }
 

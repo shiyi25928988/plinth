@@ -1,11 +1,11 @@
 package yi.shi.plinth.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.SetArgs;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;
 import lombok.extern.slf4j.Slf4j;
+import tools.jackson.core.JacksonException;
 import yi.shi.plinth.annotation.cache.RedisCache;
 
 import java.io.IOException;
@@ -42,18 +42,14 @@ public class RedisCacheUtil {
     public static void set(String key, Object value, Duration expiration){
         try {
             getRedisCommands().set(key, JsonUtils.toJson(value), SetArgs.Builder.ex(expiration));
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
     }
 
     public static <T> Object get(String key, Class<T> classType){
         String _value = getRedisCommands().get(key);
-        try {
-            return JsonUtils.fromJson(_value.getBytes(StandardCharsets.UTF_8), classType);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return JsonUtils.fromJson(_value.getBytes(StandardCharsets.UTF_8), classType);
     }
 
     public static void del(String key){

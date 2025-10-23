@@ -3,9 +3,6 @@ package yi.shi.plinth.http;
 import java.io.*;
 import java.util.Objects;
 
-
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletResponse;
 import yi.shi.plinth.exception.UnsupportMIMETypeException;
 import yi.shi.plinth.http.result.JSON;
@@ -68,7 +65,7 @@ public final class HttpRespHelper {
         } else {
             try {
                 data = JsonUtils.toJson(responseData.getData());
-            } catch (JsonProcessingException e) {
+            } catch (Exception e) {
                 log.error(e.getLocalizedMessage());
                 resp.setStatus(HttpStatusCode.SC_INTERNAL_SERVER_ERROR);
                 resp.setCharacterEncoding("UTF-8");
