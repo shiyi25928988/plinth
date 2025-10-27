@@ -91,7 +91,7 @@ public class JettyModule extends AbstractModule {
 
 			ServletContextHandler resourceHandlerContext = new ServletContextHandler();
 			resourceHandlerContext.setBaseResource(resourceHandler.getBaseResource());
-			resourceHandlerContext.setContextPath("/static");
+			resourceHandlerContext.setContextPath(System.getProperty("resources.contextPath", "/resources"));
 			resourceHandlerContext.setDefaultRequestCharacterEncoding("UTF-8");
 			resourceHandlerContext.setDefaultResponseCharacterEncoding("UTF-8");
 			resourceHandlerContext.insertHandler(resourceHandler);
